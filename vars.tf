@@ -17,6 +17,26 @@ variable "AMIS" {
   }
 }
 
+variable "vpn_cidr" {
+default = "192.168.13.0/24"
+}
+variable "pub1_cidr" {
+default = "10.0.1.0/24"
+}
+variable "pub2_cidr" {
+default = "10.0.2.0/24"
+}
+variable "priv1_cidr" {
+default = "10.0.11.0/24"
+}
+variable "priv2_cidr" {
+default = "10.0.12.0/24"
+}
+variable "vpc_cidr" {
+default = "10.0.0.0/16"
+}
+
+
 variable "vpn_gw_id" {
 default = "vgw-0d4b2f846b7512011"
 }
