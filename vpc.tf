@@ -14,7 +14,7 @@ resource "aws_vpc" "main" {
 # Subnets
 resource "aws_subnet" "main-public-1" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.2.0/24"
+    cidr_block = "10.0.1.0/24"
     map_public_ip_on_launch = "true"
     availability_zone = "eu-central-1a"
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "main-public-1" {
 }
 resource "aws_subnet" "main-public-2" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.112.0/24"
+    cidr_block = "10.0.2.0/24"
     map_public_ip_on_launch = "true"
     availability_zone = "eu-central-1b"
 
@@ -35,7 +35,7 @@ resource "aws_subnet" "main-public-2" {
 
 resource "aws_subnet" "main-private-1" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.114.0/24"
+    cidr_block = "10.0.11.0/24"
     map_public_ip_on_launch = "false"
     availability_zone = "eu-central-1a"
 
@@ -45,7 +45,7 @@ resource "aws_subnet" "main-private-1" {
 }
 resource "aws_subnet" "main-private-2" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.5.0/24"
+    cidr_block = "10.0.12.0/24"
     map_public_ip_on_launch = "false"
     availability_zone = "eu-central-1b"
 
@@ -63,7 +63,7 @@ resource "aws_internet_gateway" "main-gw" {
     }
 }
 
-# route tables
+# Public route tables
 resource "aws_route_table" "main-public" {
     vpc_id = "${aws_vpc.main.id}"
     route {
@@ -76,18 +76,29 @@ resource "aws_route_table" "main-public" {
     }
 }
 
+resource "aws_vpn_gateway" "vpn" {
+  tags = {
+    Name = "example-vpn-gateway"
+  }
+}
+
+resource "aws_vpn_gateway_attachment" "vpn_attachment" {
+  vpc_id         = "${aws_vpc.main.id}"
+  vpn_gateway_id = "${aws_vpn_gateway.vpn.id}"
+}
+
 
 # route tables
-#resource "aws_route_table" "main-private" {
-#    vpc_id = "${aws_vpc.main.id}"
-#    route {
-#        cidr_block = "172.31.0.0/22"
-#        aws_vpn_gateway = "${var.vpn_gw_id}"
-#    }
-#    tags {
-#        Name = "main-private-1"
-#    }
-#}
+resource "aws_route_table" "main-private" {
+    vpc_id = "${aws_vpc.main.id}"
+    route {
+        cidr_block = "172.31.0.0/22"
+        gateway_id = "${aws_vpn_gateway.vpn.id}"
+    }
+    tags {
+        Name = "main-private-1"
+    }
+}
 
 # route associations public
 resource "aws_route_table_association" "main-public-1-a" {
@@ -100,11 +111,11 @@ resource "aws_route_table_association" "main-public-2-a" {
 }
 
 # route associations private
-#resource "aws_route_table_association" "main-private-1-a" {
-#    subnet_id = "${aws_subnet.main-private-1.id}"
-#    route_table_id = "${aws_route_table.main-private.id}"
-#}
-#resource "aws_route_table_association" "main-private-2-a" {
-#    subnet_id = "${aws_subnet.main-private-2.id}"
-#    route_table_id = "${aws_route_table.main-private.id}"
-#}
+resource "aws_route_table_association" "main-private-1-a" {
+    subnet_id = "${aws_subnet.main-private-1.id}"
+    route_table_id = "${aws_route_table.main-private.id}"
+}
+resource "aws_route_table_association" "main-private-2-a" {
+    subnet_id = "${aws_subnet.main-private-2.id}"
+    route_table_id = "${aws_route_table.main-private.id}"
+}

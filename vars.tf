@@ -18,7 +18,7 @@ variable "AMIS" {
 }
 
 variable "vpn_gw_id" {
-default = "vgw-099d60986f4188e18"
+default = "vgw-0d4b2f846b7512011"
 }
 
 variable "INSTANCE_USERNAME" {
