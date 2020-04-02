@@ -18,7 +18,7 @@ variable "AMIS" {
 }
 
 variable "vpn_cidr" {
-default = "0.0.0.0/0"
+default = "192.168.13.0/24"
 }
 variable "pub1_cidr" {
 default = "10.0.111.0/24"
@@ -27,13 +27,13 @@ variable "pub2_cidr" {
 default = "10.0.2.0/24"
 }
 variable "priv1_cidr" {
-default = "10.0.1.0/24"
+default = "10.0.11.0/24"
 }
 variable "priv2_cidr" {
-default = "10.0.2.0/24"
+default = "10.0.12.0/24"
 }
 variable "vpc_cidr" {
-default = "10.0.0.0/22"
+default = "10.0.0.0/16"
 }
 
 
